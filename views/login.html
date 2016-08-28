@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%=title %></title>
+      <link rel='stylesheet' href='//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css' />
+      <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="navbar-form navbar-right text-center" role="search" method="post" action="/login">
+                  <div class="form-group">
+                      <input type="text" class="form-control" name="loginname" placeholder="Username">
+                  </div>
+                  <div class="form-group">
+                      <input type="password" class="form-control" name="password" placeholder="Password">
+                  </div>
+                  <button type="submit" class="btn btn-success">Sign in</button>
+            </form>
+        </div>
+      </div>
+    </nav>
+  </body>
+</html>

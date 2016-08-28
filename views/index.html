@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%=title %></title>
+    <link rel='stylesheet' href='//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css'/>
+    <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+</head>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Brand</a>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <% if(logined){ %>
+            <form class="navbar-form navbar-right" role="Sign out" method="post" action="/SignOut">
+                <button type="submit" class="btn btn-danger">Sign out</button>
+            </form>
+            <% } %>
+            <form class="navbar-form navbar-right" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">Go</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<div style="margin-top: 50px;">
+    <ul class="list-group">
+        <% if(logined){ %>
+        <li class="list-group-item">
+            <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#myModal">add
+                item
+            </button>
+        </li>
+        <% } %>
+        <% if(list){ %>
+        <% list.forEach(function(item,index){ %>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-10">
+                    <a href="/articles/<%= item._id %>">
+                        <%= item.title %>
+                    </a>
+                </div>
+                <div class="col-md-2 text-right">
+                    <% if(logined){ %>
+                    <a class="btn btn-danger btn-xs" href="/del?index=<%= item._id %>">remove</a>
+                    <a class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModa2"
+                       onclick="edit('<%=item._id%>')">update</a>
+                    <% } %>
+                </div>
+            </div>
+        </li>
+        <% }) %>
+        <% } %>
+    </ul>
+</div>
+<nav>
+    <ul class="pager">
+        <li><a href="#">Previous</a></li>
+        <li><a href="#">Next</a></li>
+    </ul>
+</nav>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">New item</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/add" method="post" id="add_item">
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">Title:</label>
+                        <input type="text" name="title" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="control-label">Content:</label>
+                        <textarea name="content" class="form-control" id="message-text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save_mess">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModa2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <form action="/update" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabe2">New item</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name2" class="control-label">Title:</label>
+                        <input type="hidden" name="index" id="updateIndex">
+                        <input type="text" name="title" class="form-control" id="recipient-name2">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text2" class="control-label">Content:</label>
+                        <textarea name="content" class="form-control" id="message-text2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $('#save_mess').click(function () {
+        var title = $("#recipient-name").val();
+        var content = $("#message-text").val();
+        errorControl(title,content);
+        if (title !== '' && content !== '') {
+           $("#add_item").submit();
+        }
+    });
+    function errorControl(title,content){
+        if (title === '') {
+            alert('The title is null !');
+            return;
+        }
+        if (content === '') {
+            alert('The content is null !');
+            return;
+        }
+    };
+    $('#myModa2 .btn-primary').on('click', function (e) {
+        var title = $("#recipient-name2").val();
+        var content = $("#message-text2").val();
+        if(title === '' || content === '') {
+            e.preventDefault();
+            errorControl(title,content);
+        }else{
+            $('#myModa2 form').submit();
+        }
+    })
+    function edit(index) {
+        $.get('/get/' + index, function (result) {
+            $("#updateIndex").val(index);
+            $("#recipient-name2").val(result.title);
+            $("#message-text2").val(result.content);
+        });
+    }
+</script>
+</body>
+</html>
